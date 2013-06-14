@@ -1,0 +1,1 @@
+UPDATE `npc_monstersay` SET `text1`='More of the warden\'s errand boys!', `text2`='Tell the warden this prison is ours now! ' WHERE `entry`=1716;
