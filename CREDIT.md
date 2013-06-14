@@ -1,0 +1,36 @@
+These people get a thanks from ArcPro who made some of the stuff in this repository.
+
+ArcPro Team: (http://arcpro.sexyi.am/), (http://arcpro.sexyi.am/wiki)
+| (Founder/Owner) zdroid9770 (arcpro.sexyi.am / Zark / zdroid)
+| (Administrator/Head Developer) Ronvenal (Bobmaster)
+| (Developer(s)) Overtry | Retribution | Grimton1337 (or Grimtonz1337)
+| (Super Moderator(s)) Chibi
+| (Emulators) TrinityCore | ArcEmu | ArcPro
+| (Database/Events) dev.landofelves.net | https://github.com/DarkAngel39/Events
+| (MVPs) N/A
+
+Retired WoTD Team:
+| IOwnAPC | xenion64 | ifamous | EternallyMe | Yuki / Mayumi | SlyGuy
+
+Other #1 (People):
+| QQRofl | xXDeathXx | stoneharry | Zoila (Method) | Rochet2 | Eatos
+| Jeutie | Myerz | Skreem | Ramor | Succy | Syke | Dimie (Dimarxx)
+| slade1000 | eMaTriKs | Coreyduffel | Rasmuz | M@R!O | kadava | fast_elf
+| bonedeath6 | LordJedi | FrostTeam | Kenuvis | darkalex | Knaur | Neuz 
+| WIXXZI | Agger | CodeMonkey | Xzomblie | comstation11 (wraithx2)
+| yiera | Olabvii | Shady | Ascent | Utsjitimmie | Underseas | Justin
+| RakkorZ | ZxOxZ | 2D | HellSpawn | Grandelf | Double H | Marijnz
+| Alvanaar | BrantX | Shorts | Reflexiz | Laurea| WoW-V | Kibblebit
+| rdn | DragonDev | RaxiCax | Gastricpenguin | Hungary | Slade1000
+| Yerney | Azolex | Tally/`Angel | nymphx | Rakkorz | Sysmis | Icefreze
+| Paroxysm | Morfeo | Celtus | Faddix | BlackHer0 | MikeBeck | Blua
+| treetree | Katos | Janni | Recon | Nandi | Foereaper | Runemaster
+| HalestormXV | WigSplitta | Hopla | Hanfer | Twilight/Twl | Craigy109
+| Aylow | Kenuvis | darkalex
+
+Other #2 (Projects):
+| LunarSCR | HHScripts | Skyfire | StrawberryCore | Mangos | LUA++
+| Norwegian Elite Team | Holystone Productions | projectsilvermoon.net
+| CNA-WoW | lasp-forumotion.com | Project eXa | InfinityWoW | AC-Web.org
+| Moon++ | ScriptDev2 | Ascent | Myth Project | ArcScript | Pwn - Scripts
+| FlameScripts | ArkCORE | 
