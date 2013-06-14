@@ -1,0 +1,525 @@
+diff --git a/src/game/Chat.cpp b/src/game/Chat.cpp
+index 8dc9148..94f4b51 100644
+--- a/src/game/Chat.cpp
++++ b/src/game/Chat.cpp
+@@ -855,6 +855,11 @@ void ChatHandler::SendGlobalSysMessage(const char *str)
+     delete [] buf;
+ }
+ 
++void ChatHandler::PvP_GlobalMessage(const char *msg)
++{
++	SendGlobalSysMessage(msg);
++}
++
+ void ChatHandler::SendSysMessage(int32 entry)
+ {
+     SendSysMessage(GetMangosString(entry));
+diff --git a/src/game/Chat.h b/src/game/Chat.h
+index b82899e..b0950a0 100644
+--- a/src/game/Chat.h
++++ b/src/game/Chat.h
+@@ -72,6 +72,7 @@ class ChatHandler
+ 
+         bool isValidChatMessage(const char* msg);
+         bool HasSentErrorMessage() { return sentErrorMessage;}
++		void PvP_GlobalMessage(const char* msg);
+     protected:
+         explicit ChatHandler() : m_session(NULL) {}      // for CLI subclass
+ 
+diff --git a/src/game/Player.cpp b/src/game/Player.cpp
+index 822f706..31303d9 100644
+--- a/src/game/Player.cpp
++++ b/src/game/Player.cpp
+@@ -595,6 +595,9 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
+ 
+     m_lastFallTime = 0;
+     m_lastFallZ = 0;
++
++	//PVP SYSTEM CONSTRUCT
++	PvP_StatsLoaded = false;
+ }
+ 
+ Player::~Player ()
+@@ -20237,8 +20240,212 @@ void Player::RewardSinglePlayerAtKill(Unit* pVictim)
+         if(pVictim->GetTypeId()==TYPEID_UNIT)
+             KilledMonster(((Creature*)pVictim)->GetCreatureInfo(), pVictim->GetObjectGuid());
+     }
++
++	/*********************************************************/
++	/***                  CUSTOM PVP SYSTEM                ***/
++	/*********************************************************/
++	if(pVictim->GetTypeId() != TYPEID_PLAYER)
++	{
++		//If victim is not a player then no need to go furthur
++		return;
++	}
++
++	//Main Variables
++	Player * pvpPlayer = this;
++	Player * pvpVictim = ((Player*)pVictim);
++	ChatHandler chatPlayer = ChatHandler(pvpPlayer);
++	ChatHandler chatVictim = ChatHandler(pvpVictim);
++	#define PVP_COLOR "|c000000ff[PvP]|r|cFFDAA520" //(Blue)[PvP](Goldenrod)Message
++	#define PVP_GLOBAL_COLOR "|c00ff0000[PvP]|r|cFF32CD32" //(Red)[PvP](Lime Green)Message
++
++	//Shitty Variables
++	uint32 KillerSendRewardCount = 0;
++	uint32 OldVictimKillingSpree = 0;
++	bool KillerStreakAnnounce = false;
++	bool VictimStreakAnnounce = false;
++
++	//Load PvP Stats
++	pvpPlayer->PvP_LoadStats();
++	pvpVictim->PvP_LoadStats();
++
++	//Check For Errors
++	if(pvpPlayer->GetGUIDLow() == pvpVictim->GetGUIDLow())
++	{
++		//If the killer died by himself
++		return;
++	}
++	if(pvpPlayer->getLevel() > (pvpVictim->getLevel() + 10))
++	{
++		//If killer has 10 extra levels than victim
++		chatPlayer.PSendSysMessage(PVP_COLOR"Your victim has a very low level. You were not rewarded.");
++		return;
++	}
++	if(pvpPlayer->GetZoneId() != pvpVictim->GetZoneId())
++	{
++		//If they're both not in a same zoneid
++		chatPlayer.PSendSysMessage(PVP_COLOR"Your victim is not in the same area. You were not rewarded.");
++		return;
++	}
++	if(pvpPlayer->GetSession()->GetRemoteAddress() == pvpVictim->GetSession()->GetRemoteAddress())
++	{
++		//If they both have same IP address
++		chatPlayer.PSendSysMessage(PVP_COLOR"You are not rewarded for farming. It is against our rules and is bannable.");
++		return;
++	}
++	if(pvpPlayer->GetGroup())
++	{
++		//If player is in a raid group
++		if(pvpPlayer->GetGroup()->isRaidGroup())
++		{
++			chatPlayer.PSendSysMessage(PVP_COLOR"You are in a raid group, You will not be rewarded for killing in a raid group.");
++			return;
++		}
++	}
++	if(pvpVictim->GetGUIDLow() == pvpPlayer->PvP_LastKillGuid && pvpPlayer->PvP_LastKillCount >= 3)
++	{
++		chatPlayer.PSendSysMessage(PVP_COLOR"You are not rewarded for killing the same player again and again.");
++		return;
++	}
++
++	//Killer Stats
++	pvpPlayer->PvP_CurrentKills++;
++	pvpPlayer->PvP_TotalKills++;
++	pvpPlayer->PvP_CurrentDeaths = 0; //Consecutive deaths = 0
++	//Killer Streak Stats
++	float pNewStreak = floor(float(pvpPlayer->PvP_CurrentKills / 10));
++	if(pNewStreak > pvpPlayer->PvP_KillStreak)
++	{
++		pvpPlayer->PvP_KillStreak = uint32(pNewStreak);
++		KillerStreakAnnounce = true;
++	}
++	//Killer Last Kill
++	if(pvpPlayer->PvP_LastKillGuid == pvpVictim->GetGUIDLow())
++	{
++		pvpPlayer->PvP_LastKillCount += 1;
++	}
++	else
++	{
++		pvpPlayer->PvP_LastKillGuid = pvpVictim->GetGUIDLow();
++		pvpPlayer->PvP_LastKillCount = 1;
++	}
++
++	//Victim Stats
++	pvpVictim->PvP_CurrentDeaths++;
++	pvpVictim->PvP_TotalDeaths++;
++	pvpVictim->PvP_CurrentKills = 0; //Consecutive kills = 0
++	//Victim Streak Stats
++	if(pvpVictim->PvP_KillStreak > 0)
++	{
++		VictimStreakAnnounce = true;
++	}
++	OldVictimKillingSpree = pvpVictim->PvP_KillStreak;
++	pvpVictim->PvP_KillStreak = 0;
++
++	//Group Stats
++	if(pvpPlayer->GetGroup())
++	{
++		pvpPlayer->PvP_GroupKills++;
++	}
++
++	//Reward
++	switch(pvpPlayer->PvP_KillStreak)
++	{
++	case 0:
++		KillerSendRewardCount = 1;
++	break;
++	case 1:
++		KillerSendRewardCount = 5;
++	break;
++	case 2:
++		KillerSendRewardCount = 10;
++	break;
++	default:
++		KillerSendRewardCount = 10;
++	break;
++	}
++	if(KillerStreakAnnounce)
++	{
++		KillerSendRewardCount += 5;
++	}
++	if(VictimStreakAnnounce)
++	{
++		KillerSendRewardCount += 5;
++	}
++	pvpPlayer->StoreNewItemInBestSlots(29434, KillerSendRewardCount);
++
++   pvpPlayer->CastSpell(pvpPlayer, 47883, false);
++
++	//Notify Players
++	chatPlayer.PSendSysMessage(PVP_COLOR"You killed %s. Your Consecutive Kills: %u, Total Kills: %u. You received your reward, [%s]x%u!", pvpVictim->GetName(), pvpPlayer->PvP_CurrentKills, pvpPlayer->PvP_TotalKills, "Badge of Justice", KillerSendRewardCount);
++	chatVictim.PSendSysMessage(PVP_COLOR"You were killed by %s. Your Consecutive Deaths: %u, Total Deaths: %u.", pvpPlayer->GetName(), pvpVictim->PvP_CurrentDeaths, pvpVictim->PvP_TotalDeaths);
++
++	//Global Messages
++	if(KillerStreakAnnounce)
++	{
++		char killerglobalmessage[1024];
++		snprintf(killerglobalmessage, 1024, PVP_GLOBAL_COLOR"%s is on a %u kill, killing spree! Extra [%s]x5 is rewarded!", pvpPlayer->GetName(), pvpPlayer->PvP_KillStreak*10, "Badge of Justice");
++		chatPlayer.PvP_GlobalMessage(killerglobalmessage);
++	}
++	if(VictimStreakAnnounce)
++	{
++		char victimglobalmessage[1024];
++		snprintf(victimglobalmessage, 1024, PVP_GLOBAL_COLOR"%s lost a %u kill, killing spree by %s! Extra [%s]x5 is rewarded!", pvpVictim->GetName(), OldVictimKillingSpree*10, pvpPlayer->GetName(), "Badge of Justice");
++		chatVictim.PvP_GlobalMessage(victimglobalmessage);
++	}
++
++	//Save PvP Stats
++	pvpPlayer->PvP_SaveStats();
++	pvpVictim->PvP_SaveStats();
++}
++/*********************************************************/
++/***               CUSTOM PVP SYSTEM START             ***/
++/*********************************************************/
++void Player::PvP_LoadStats()
++{
++	if(PvP_StatsLoaded)
++	{
++		return;
++	}
++
++	QueryResult * QueryLoadStats = CharacterDatabase.PQuery("SELECT `totalkills`,`currentkills`,`totaldeaths`,`currentdeaths`,`groupkills`,`killstreak`,`lastkillguid`,`lastkillcount` FROM `character_pvpstats` WHERE `guid`='%u'", GetGUIDLow());
++	if(QueryLoadStats)
++	{
++		Field * FieldLoadStats = QueryLoadStats->Fetch();
++
++		PvP_TotalKills = FieldLoadStats[0].GetUInt32();
++		PvP_CurrentKills = FieldLoadStats[1].GetUInt32();
++		PvP_TotalDeaths = FieldLoadStats[2].GetUInt32();
++		PvP_CurrentDeaths = FieldLoadStats[3].GetUInt32();
++		PvP_GroupKills = FieldLoadStats[4].GetUInt32();
++		PvP_KillStreak = FieldLoadStats[5].GetUInt32();
++		PvP_LastKillGuid = FieldLoadStats[6].GetUInt32();;
++		PvP_LastKillCount = FieldLoadStats[7].GetUInt32();;
++    }
++	else
++	{
++		PvP_TotalKills = 0;
++		PvP_CurrentKills = 0;
++		PvP_TotalDeaths = 0;
++		PvP_CurrentDeaths = 0;
++		PvP_GroupKills = 0;
++		PvP_KillStreak = 0;
++		PvP_LastKillGuid = 0;
++		PvP_LastKillCount = 0;
++	}
++	delete QueryLoadStats;
++
++	//Load only once
++	PvP_StatsLoaded = true;
++}
++
++bool Player::PvP_SaveStats()
++{
++	return CharacterDatabase.PExecute("REPLACE INTO `character_pvpstats` (`guid`, `totalkills`, `currentkills`, `totaldeaths`, `currentdeaths`, `killstreak`, `groupkills`, `lastkillguid`, `lastkillcount`) VALUES ('%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u', '%u')",
++		GetGUIDLow(), PvP_TotalKills, PvP_CurrentKills, PvP_TotalDeaths, PvP_CurrentDeaths, PvP_GroupKills, PvP_KillStreak, PvP_LastKillGuid, PvP_LastKillCount);
+ }
+ 
++/*********************************************************/
++/***                CUSTOM PVP SYSTEM END              ***/
++/*********************************************************/
++
+ void Player::RewardPlayerAndGroupAtEvent(uint32 creature_id, WorldObject* pRewardSource)
+ {
+     uint64 creature_guid = pRewardSource->GetTypeId()==TYPEID_UNIT ? pRewardSource->GetGUID() : uint64(0);
+diff --git a/src/game/Player.h b/src/game/Player.h
+index afe9c7a..8ef93a6 100644
+--- a/src/game/Player.h
++++ b/src/game/Player.h
+@@ -1871,6 +1871,28 @@ class MANGOS_DLL_SPEC Player : public Unit
+         void DestroyForPlayer( Player *target, bool anim = false ) const;
+         void SendLogXPGain(uint32 GivenXP,Unit* victim,uint32 RestXP);
+ 
++		/*********************************************************/
++        /***               CUSTOM PVP SYSTEM START             ***/
++        /*********************************************************/
++		uint32 PvP_TotalKills;
++		uint32 PvP_CurrentKills;
++
++		uint32 PvP_TotalDeaths;
++		uint32 PvP_CurrentDeaths;
++
++		uint32 PvP_KillStreak;
++		uint32 PvP_GroupKills;
++
++		uint32 PvP_LastKillGuid;
++		uint32 PvP_LastKillCount;
++
++		bool PvP_StatsLoaded;
++		void PvP_LoadStats();
++		bool PvP_SaveStats();
++		/*********************************************************/
++        /***                CUSTOM PVP SYSTEM END              ***/
++        /*********************************************************/
++
+         // notifiers
+         void SendAttackSwingCantAttack();
+         void SendAttackSwingCancelAttack();
+diff --git a/win/VC90/game.vcproj b/win/VC90/game.vcproj
+index 1eb6872..30b85e1 100644
+--- a/win/VC90/game.vcproj
++++ b/win/VC90/game.vcproj
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="Windows-1252"?>
+ <VisualStudioProject
+ 	ProjectType="Visual C++"
+-	Version="9,00"
++	Version="9.00"
+ 	Name="game"
+ 	ProjectGUID="{1DC6C4DA-A028-41F3-877D-D5400C594F88}"
+ 	RootNamespace="game"
+@@ -102,7 +102,7 @@
+ 			/>
+ 		</Configuration>
+ 		<Configuration
+-			Name="Debug|x64"
++			Name="Release|Win32"
+ 			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			ConfigurationType="4"
+@@ -124,19 +124,17 @@
+ 			/>
+ 			<Tool
+ 				Name="VCMIDLTool"
+-				TargetEnvironment="3"
+ 			/>
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+-				AdditionalOptions="/MP /bigobj /Zm200"
+-				Optimization="0"
++				AdditionalOptions="/MP /Zm200"
++				InlineFunctionExpansion="1"
+ 				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\vmap;..\..\dep\ACE_wrappers"
+-				PreprocessorDefinitions="WIN32;_DEBUG;MANGOS_DEBUG;_LIB;"
+-				StringPooling="false"
+-				MinimalRebuild="false"
+-				BasicRuntimeChecks="3"
+-				RuntimeLibrary="3"
++				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
++				StringPooling="true"
++				RuntimeLibrary="2"
+ 				EnableFunctionLevelLinking="true"
++				EnableEnhancedInstructionSet="1"
+ 				RuntimeTypeInfo="true"
+ 				UsePrecompiledHeader="2"
+ 				PrecompiledHeaderThrough="pchdef.h"
+@@ -157,7 +155,7 @@
+ 			/>
+ 			<Tool
+ 				Name="VCResourceCompilerTool"
+-				PreprocessorDefinitions="_DEBUG"
++				PreprocessorDefinitions="NDEBUG"
+ 				Culture="1033"
+ 			/>
+ 			<Tool
+@@ -165,7 +163,6 @@
+ 			/>
+ 			<Tool
+ 				Name="VCLibrarianTool"
+-				AdditionalDependencies=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
+ 				OutputFile=".\game__$(PlatformName)_$(ConfigurationName)\game.lib"
+ 				SuppressStartupBanner="true"
+ 			/>
+@@ -186,7 +183,7 @@
+ 			/>
+ 		</Configuration>
+ 		<Configuration
+-			Name="Release|Win32"
++			Name="Debug_NoPCH|Win32"
+ 			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			ConfigurationType="4"
+@@ -211,17 +208,17 @@
+ 			/>
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+-				AdditionalOptions="/MP /Zm200"
+-				InlineFunctionExpansion="1"
++				AdditionalOptions="/MP"
++				Optimization="0"
+ 				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\vmap;..\..\dep\ACE_wrappers"
+-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
+-				StringPooling="true"
+-				RuntimeLibrary="2"
++				PreprocessorDefinitions="WIN32;_DEBUG;MANGOS_DEBUG;_LIB;"
++				StringPooling="false"
++				MinimalRebuild="false"
++				BasicRuntimeChecks="3"
++				RuntimeLibrary="3"
+ 				EnableFunctionLevelLinking="true"
+-				EnableEnhancedInstructionSet="1"
+ 				RuntimeTypeInfo="true"
+-				UsePrecompiledHeader="2"
+-				PrecompiledHeaderThrough="pchdef.h"
++				UsePrecompiledHeader="0"
+ 				PrecompiledHeaderFile=".\game__$(PlatformName)_$(ConfigurationName)\game.pch"
+ 				AssemblerListingLocation=".\game__$(PlatformName)_$(ConfigurationName)\"
+ 				ObjectFile=".\game__$(PlatformName)_$(ConfigurationName)\"
+@@ -232,14 +229,13 @@
+ 				DebugInformationFormat="3"
+ 				CallingConvention="0"
+ 				CompileAs="0"
+-				ForcedIncludeFiles="pchdef.h"
+ 			/>
+ 			<Tool
+ 				Name="VCManagedResourceCompilerTool"
+ 			/>
+ 			<Tool
+ 				Name="VCResourceCompilerTool"
+-				PreprocessorDefinitions="NDEBUG"
++				PreprocessorDefinitions="_DEBUG"
+ 				Culture="1033"
+ 			/>
+ 			<Tool
+@@ -267,7 +263,7 @@
+ 			/>
+ 		</Configuration>
+ 		<Configuration
+-			Name="Release|x64"
++			Name="Debug|x64"
+ 			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			ConfigurationType="4"
+@@ -294,13 +290,14 @@
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+ 				AdditionalOptions="/MP /bigobj /Zm200"
+-				InlineFunctionExpansion="1"
++				Optimization="0"
+ 				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\vmap;..\..\dep\ACE_wrappers"
+-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
+-				StringPooling="true"
+-				RuntimeLibrary="2"
++				PreprocessorDefinitions="WIN32;_DEBUG;MANGOS_DEBUG;_LIB;"
++				StringPooling="false"
++				MinimalRebuild="false"
++				BasicRuntimeChecks="3"
++				RuntimeLibrary="3"
+ 				EnableFunctionLevelLinking="true"
+-				EnableEnhancedInstructionSet="0"
+ 				RuntimeTypeInfo="true"
+ 				UsePrecompiledHeader="2"
+ 				PrecompiledHeaderThrough="pchdef.h"
+@@ -321,7 +318,7 @@
+ 			/>
+ 			<Tool
+ 				Name="VCResourceCompilerTool"
+-				PreprocessorDefinitions="NDEBUG"
++				PreprocessorDefinitions="_DEBUG"
+ 				Culture="1033"
+ 			/>
+ 			<Tool
+@@ -350,7 +347,7 @@
+ 			/>
+ 		</Configuration>
+ 		<Configuration
+-			Name="Debug_NoPCH|Win32"
++			Name="Release|x64"
+ 			OutputDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			IntermediateDirectory=".\game__$(PlatformName)_$(ConfigurationName)"
+ 			ConfigurationType="4"
+@@ -372,20 +369,21 @@
+ 			/>
+ 			<Tool
+ 				Name="VCMIDLTool"
++				TargetEnvironment="3"
+ 			/>
+ 			<Tool
+ 				Name="VCCLCompilerTool"
+-				AdditionalOptions="/MP"
+-				Optimization="0"
++				AdditionalOptions="/MP /bigobj /Zm200"
++				InlineFunctionExpansion="1"
+ 				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\vmap;..\..\dep\ACE_wrappers"
+-				PreprocessorDefinitions="WIN32;_DEBUG;MANGOS_DEBUG;_LIB;"
+-				StringPooling="false"
+-				MinimalRebuild="false"
+-				BasicRuntimeChecks="3"
+-				RuntimeLibrary="3"
++				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
++				StringPooling="true"
++				RuntimeLibrary="2"
+ 				EnableFunctionLevelLinking="true"
++				EnableEnhancedInstructionSet="0"
+ 				RuntimeTypeInfo="true"
+-				UsePrecompiledHeader="0"
++				UsePrecompiledHeader="2"
++				PrecompiledHeaderThrough="pchdef.h"
+ 				PrecompiledHeaderFile=".\game__$(PlatformName)_$(ConfigurationName)\game.pch"
+ 				AssemblerListingLocation=".\game__$(PlatformName)_$(ConfigurationName)\"
+ 				ObjectFile=".\game__$(PlatformName)_$(ConfigurationName)\"
+@@ -396,13 +394,14 @@
+ 				DebugInformationFormat="3"
+ 				CallingConvention="0"
+ 				CompileAs="0"
++				ForcedIncludeFiles="pchdef.h"
+ 			/>
+ 			<Tool
+ 				Name="VCManagedResourceCompilerTool"
+ 			/>
+ 			<Tool
+ 				Name="VCResourceCompilerTool"
+-				PreprocessorDefinitions="_DEBUG"
++				PreprocessorDefinitions="NDEBUG"
+ 				Culture="1033"
+ 			/>
+ 			<Tool
+@@ -410,6 +409,7 @@
+ 			/>
+ 			<Tool
+ 				Name="VCLibrarianTool"
++				AdditionalDependencies=".\shared__$(PlatformName)_$(ConfigurationName)\shared.lib"
+ 				OutputFile=".\game__$(PlatformName)_$(ConfigurationName)\game.lib"
+ 				SuppressStartupBanner="true"
+ 			/>
+@@ -1636,7 +1636,7 @@
+ 				/>
+ 			</FileConfiguration>
+ 			<FileConfiguration
+-				Name="Debug|x64"
++				Name="Release|Win32"
+ 				>
+ 				<Tool
+ 					Name="VCCLCompilerTool"
+@@ -1645,7 +1645,7 @@
+ 				/>
+ 			</FileConfiguration>
+ 			<FileConfiguration
+-				Name="Release|Win32"
++				Name="Debug|x64"
+ 				>
+ 				<Tool
+ 					Name="VCCLCompilerTool"

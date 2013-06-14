@@ -1,0 +1,88 @@
+// ###################################################################################
+// #                          VipMaster npc README file                              #
+// #               You must include these rows into the right place                  #
+// ###################################################################################
+
+// ###################################################################################
+// #            If you use the escortai function you must import this:               #
+// #                        01_world_escortai_spawn.sql                              #
+// ###################################################################################
+
+// --== ScriptLoader.cpp ==--
+
+  #ifdef DO_SCRIPTS
+  //custom
++ void AddSC_npc_vipmaster();
+
+  //examples
+  void AddSC_example_creature();
+  void AddSC_example_escort();
+____________________________________________________
+____________________________________________________
+
+  void AddScripts()
+  {
+  #ifdef DO_SCRIPTS
+
+      //custom
++     AddSC_npc_vipmaster();
+
+      //examples
+      AddSC_example_creature();
+
+
+
+
+
+// --== world.cpp ==--
+
+    rate_values[RATE_DURABILITY_LOSS_BLOCK] = sConfig.GetFloatDefault("DurabilityLossChance.Block",0.05f);
+    if (rate_values[RATE_DURABILITY_LOSS_BLOCK] < 0.0f)
+    {
+        sLog.outError("DurabilityLossChance.Block (%f) must be >=0. Using 0.0 instead.",rate_values[RATE_DURABILITY_LOSS_BLOCK]);
+        rate_values[RATE_DURABILITY_LOSS_BLOCK] = 0.0f;
+    }
+
++   // ######### CUSTOM CONFIGS #########
++   m_configs[CONFIG_VIP_INSTA_DEL] = sConfig.GetBoolDefault("VipMaster.InstaceDelete", true);
++   m_configs[CONFIG_VIP_CHAR_SAVE] = sConfig.GetBoolDefault("VipMaster.CharacterSave", true);
++   m_configs[CONFIG_VIP_REPAIR] = sConfig.GetBoolDefault("VipMaster.RepairItems", true);
++   m_configs[CONFIG_VIP_WHISP] = sConfig.GetBoolDefault("VipMaster.Whisper", true);
++   m_configs[CONFIG_VIP_VENDOR] = sConfig.GetBoolDefault("VipMaster.Vendor", true);
++   m_configs[CONFIG_VIP_ITEM] = sConfig.GetBoolDefault("VipMaster.VipItems", true);
++   m_configs[CONFIG_VIP_ESCORT] = sConfig.GetBoolDefault("VipMaster.UseEscortAI", false);
++   m_configs[CONFIG_VIP_A_GUID] = sConfig.GetIntDefault("Vipmaster.AllianceGUID", 0);
++   m_configs[CONFIG_VIP_H_GUID] = sConfig.GetIntDefault("Vipmaster.HordeGUID", 0);
++   m_configs[CONFIG_VIP_NOTIFY] = sConfig.GetBoolDefault("Vipmaster.Notify", false);
+
+    ///- Read other configuration items from the config file
+
+    m_configs[CONFIG_DURABILITY_LOSS_IN_PVP] = sConfig.GetBoolDefault("DurabilityLoss.InPvP", false);
+
+    m_configs[CONFIG_COMPRESSION] = sConfig.GetIntDefault("Compression", 1);
+    if (m_configs[CONFIG_COMPRESSION] < 1 || m_configs[CONFIG_COMPRESSION] > 9)
+    {
+
+
+
+
+// --== world.h ==--
+
+/// Configuration elements
+enum WorldConfigs
+{
+    CONFIG_COMPRESSION = 0,
++   CONFIG_VIP_INSTA_DEL,
++   CONFIG_VIP_CHAR_SAVE,
++   CONFIG_VIP_REPAIR,
++   CONFIG_VIP_WHISP,
++   CONFIG_VIP_VENDOR,
++   CONFIG_VIP_ITEM,
++   CONFIG_VIP_ESCORT,
++   CONFIG_VIP_A_GUID,
++   CONFIG_VIP_H_GUID,
++   CONFIG_VIP_NOTIFY,
+    CONFIG_GRID_UNLOAD,
+    CONFIG_INTERVAL_SAVE,
+    CONFIG_INTERVAL_GRIDCLEAN,
+    CONFIG_INTERVAL_MAPUPDATE,

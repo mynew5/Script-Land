@@ -1,0 +1,53 @@
+#
+# COPY THIS INTO THE TRINITYCORE.CONF FILE ANYWHERE
+#
+
+###############################################################################
+# VIPMASTER NPC SETTINGS
+#
+#    VipMaster.InstaceDelete
+#        It'similar to ".instance unbind all" command
+#    
+#    VipMaster.CharacterSave
+#        It'similar to ".save" command
+#    
+#    VipMaster.RepairItems
+#        Repair all equipped items free
+#    
+#    VipMaster.DisableWhisper
+#        It'similar to ".whisper on/off" command
+#    
+#    VipMaster.Vendor
+#        Enable/Disable sending the vendorlist for the player
+#    
+#    VipMaster.VipItems
+#        Enable/Disable the "buyable for credit" item function
+#        This requires an online vip panel, which you need to make yourself
+#    
+#    VipMaster.UseEscortAI
+#        Enable/Disable using EscortAI to make npc able to move
+#    
+#    VipMaster.HordeGUID
+#        Only need to set, if you use the EscortAI
+#        It's the guid of the npc that walks round in Orgrimmar
+#    
+#    VipMaster.AllianceGUID
+#        Only need to set, if you use the EscortAI
+#        It's the guid of the npc that walks round in Stormwind
+#    
+#    VipMaster.Notify
+#        Enable/Disable sending notification when a player stands near to npc
+#        and has a non checked item
+#        WARNING: this function can overload the core
+#    
+###############################################################################
+VipMaster.InstaceDelete = 1
+VipMaster.CharacterSave = 1
+VipMaster.RepairItems = 1
+VipMaster.DisableWhisper = 1
+VipMaster.Vendor = 1
+VipMaster.VipItems = 1
+VipMaster.UseEscortAI = 1
+Vipmaster.HordeGUID = 800000
+Vipmaster.AllianceGUID = 800001
+Vipmaster.Notify = 1
