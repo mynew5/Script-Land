@@ -203,3 +203,4 @@ UPDATE quests SET Details		='I am heartened by your initiative to speak with me.
 
 -- Set LoE db version
 UPDATE db_version SET revision=5 WHERE db_name='LoE World';
+

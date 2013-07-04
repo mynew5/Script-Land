@@ -525,3 +525,4 @@ UPDATE creature_proto SET auras = '19502' WHERE entry = '12296';
 
 -- Set LoE db version
 UPDATE db_version SET revision=7 WHERE db_name='LoE World';
+

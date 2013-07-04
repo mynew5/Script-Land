@@ -482,3 +482,4 @@ INSERT INTO creature_waypoints (spawnid, waypointid, position_x, position_y, pos
 
 -- Set LoE db version
 UPDATE db_version SET revision=4 WHERE db_name='LoE World';
+

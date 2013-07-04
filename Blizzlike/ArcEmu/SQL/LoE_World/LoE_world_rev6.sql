@@ -306,3 +306,4 @@ UPDATE creature_names SET type=0 WHERE entry=23979;  -- was 8
 
 -- Set LoE db version
 UPDATE db_version SET revision=6 WHERE db_name='LoE World';
+

@@ -162,3 +162,4 @@ UPDATE creature_spawns SET slot1item =0 WHERE id=45473;
 
 -- Set LoE db version
 UPDATE db_version SET revision=8 WHERE db_name='LoE World';
+

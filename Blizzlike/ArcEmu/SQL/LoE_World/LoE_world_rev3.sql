@@ -3170,3 +3170,4 @@ UPDATE `vendors` SET `inctime`='1800000' WHERE (`entry`='12022') AND (`item`='16
 
 -- Set LoE db version
 UPDATE db_version SET revision=3 WHERE db_name='LoE World';
+
