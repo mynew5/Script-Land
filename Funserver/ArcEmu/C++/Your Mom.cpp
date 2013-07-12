@@ -2,6 +2,7 @@
 //  yourmom Scripted                        #
 //  By Slade1000                            #
 //###########################################
+
 #include "StdAfx.h"
 #include "Setup.h"
 #include "Base.h"
@@ -25,28 +26,28 @@ class yourmomAI : public ArcScriptBossAI
         {
             AddSpell(felcleave, Target_Current, 15, 0, 10);
             Addspell(shadowbolt, Target_RandomPlayer, 15, 0, 10);
-            AddEmote(Event_OnCombatStart, "Im will always love you ", Text_Yell);
-            AddEmote(Event_OnTargetDied, "why me", Text_Yell);
-            AddEmote(Event_OnTargetDied, "no no did i beat you to hard", Text_Yell);
-            AddEmote(Event_OnDied, "Its your fathers fault", Text_Yell);
+            AddEmote(Event_OnCombatStart, "I will always love you!", Text_Yell);
+            AddEmote(Event_OnTargetDied, "Why me?", Text_Yell);
+            AddEmote(Event_OnTargetDied, "No no, did I beat you to hard?", Text_Yell);
+            AddEmote(Event_OnDied, "Its your fathers fault.", Text_Yell);
         }
             void AIUpdate()
         {
             if(GetHealthPercent()<=100)  // Phase one
         {
-             AddSpell(wellfed, Target_RandomPlayer, 100, 0, 30, 0, 0, false, "you look hungary dear here have some food", Text_Yell);
+             AddSpell(wellfed, Target_RandomPlayer, 100, 0, 30, 0, 0, false, "You look hungry dear here have some food.", Text_Yell);
         }
             if(GetHealthPercent()<=70) // Phase 2
         {
-            AddSpell(chockingcloud, Target_SecondMostHated, 100, 0, 100, 0,0, false, "oops dear burned the food", Text_Yell);
+            AddSpell(chockingcloud, Target_SecondMostHated, 100, 0, 100, 0,0, false, "Oops, dear burned the food.", Text_Yell);
         }
             if(GetHealthPercent()<=40) // Phase 2
         {
-            AddSpell(spiritbolts, Target_ClosestPlayer, 100, 0, 100, 0,0, false, "Ahh now im getting Agrivated its ok you were always a notty child", Text_Yell);
+            AddSpell(spiritbolts, Target_ClosestPlayer, 100, 0, 100, 0,0, false, "Ah! Now I'm getting aggravated! Its okay, you were always a naughty child.", Text_Yell);
         }
             if(GetHealthPercent()<=3) // Phase 2
         {
-            AddSpell(decimate, Target_RandomPlayer, 100, 0, 100, 0,0, false, "I will always love you but you need a spanking", Text_Yell);
+            AddSpell(decimate, Target_RandomPlayer, 100, 0, 100, 0,0, false, "I will always love you, but you need a spanking.", Text_Yell);
         }
             ParentClass::AIUpdate();
             ParentClass::AIUpdate();

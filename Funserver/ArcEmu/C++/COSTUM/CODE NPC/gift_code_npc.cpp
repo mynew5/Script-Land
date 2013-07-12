@@ -30,10 +30,7 @@ public:
                                 player->PlayerTalkClass->SendGossipMenu(DEFAULT_GOSSIP_MESSAGE, creature->GetGUID());
         return true;
         }
-
-
-
-
+		
         bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
         {
                 if (sender == GOSSIP_SENDER_MAIN)
@@ -54,7 +51,6 @@ public:
 
         return true;
         }
-
 
         bool OnGossipSelectCode(Player* player, Creature* /*creature*/, uint32 sender, uint32 action, const char* code)
         {

@@ -35,7 +35,7 @@ void onPvpKill(Player* plr, Player* victim)
     plr->CastSpell(plr, 27239, true);
     plr->PlaySoundToSet(11466);
     victim->SetUInt32Value( PLAYER_FIELD_COINAGE, new_gold_v );
-    victim->BroadcastMessage("You have lost 100 gold and your soul! Learn to fight!!");
+    victim->BroadcastMessage("You have lost 100 gold and your soul!");
     int Chance = 20;
     int Generator = RandomUInt(100);
     if(Generator <= Chance)
