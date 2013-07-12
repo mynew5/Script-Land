@@ -1,0 +1,10 @@
+Database projects, used to extract the required information:
+Trinity Database: - http://www.trinitycore.org/
+UDB database: - http://udb.no-ip.org/
+YTDB database - https://www.assembla.com/spaces/ytdbase/wiki
+
+Project developer: Satanail - http://www.arcemu.org/, DarkAngel39 - https://github.com/
+Current project helpers:
+Magnifikator - https://github.com/
+Lokenn - https://github.com/
+armm77 - https://github.com/

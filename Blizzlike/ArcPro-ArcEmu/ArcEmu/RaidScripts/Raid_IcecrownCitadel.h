@@ -1,0 +1,118 @@
+/*
+ * ArcScripts2 Scripts for Arcemu MMORPG Server
+ * Copyright (C) 2011-2012 ArcScripts2 team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+//General entries/structs/data
+#define MAP_ICC	631
+
+enum IccEncounters{
+    ICC_LORD_MARROWGAR,
+	ICC_LADY_DEATHWHISPER,
+	//ICC_GUNSHIP,
+	ICC_SAURFANG,
+	ICC_FESTERGUT,
+	ICC_ROTFACE,
+	ICC_PROFESSOR_PUTRICIDE,
+	ICC_VALITRA_DREAMWALKER,
+	ICC_BLOOD_QUEEN_LANATHEL,
+	ICC_PRINCE_VALANAR,
+	ICC_SINDRAGOSA,
+	ICC_LICH_KING,
+    ICC_END
+};
+
+enum IcecrownCitadel_Bosses{
+	NPC_LICH_KING				= 36597,
+	NPC_LORD_MARROWGAR			= 36612,
+	NPC_FESTERGUT				= 36626,
+	NPC_ROTFACE					= 36627,
+	NPC_PROFESSOR_PUTRICIDE		= 36678,
+	NPC_VALITRA_DREAMWALKER		= 36789,
+	NPC_SINDRAGOSA				= 36853,
+	NPC_LADY_DEATHWHISPER		= 36855,
+	NPC_DEATHBRINGER_SAURFANG	= 37813,
+	NPC_BLOOD_QUEEN_LANATHEL	= 37955,
+	NPC_PRINCE_VALANAR			= 37970
+};
+
+//only for instance script
+uint32 IccBossEntries[]=
+{	NPC_LORD_MARROWGAR, NPC_LADY_DEATHWHISPER, NPC_DEATHBRINGER_SAURFANG, NPC_FESTERGUT, NPC_ROTFACE,
+	NPC_PROFESSOR_PUTRICIDE, NPC_VALITRA_DREAMWALKER, NPC_BLOOD_QUEEN_LANATHEL, NPC_SINDRAGOSA, NPC_PRINCE_VALANAR, 
+	NPC_LICH_KING
+};
+
+struct IccCreatureStats
+{
+	uint32 Health_10_normal;
+	uint32 Health_25_normal;
+	uint32 Health_10_heroic;
+	uint32 Health_25_heroic;
+	int32 Mana_10_normal;
+	int32 Mana_25_normal;
+	int32 Mana_10_heroic;
+	int32 Mana_25_heroic;
+};
+
+static IccCreatureStats ICC_boss_stat_Data[]=
+{
+	{6972500, 23700000, 10500000, 31376000, 0, 0, 0, 0},	//Lord Marrowgar
+	{3000000, 13400000, 6000000, 26800000, 3300000, 3300000, 11000000, 13900000},	//Lady Deathwhisper
+	//{0, 0, 0, 0, 0, 0, 0, 0},
+	{8785000, 31860000, 12300000, 43930000, 0, 0, 0, 0},	//Deathbringer Saurfang
+	{9412000, 40440000, 13700000, 52200000, 0, 0, 0, 0},	//festergut
+	{7320000, 36257000, 10458000, 47413000, 0, 0, 0, 0},	//Rotface
+	{9761500, 42000000, 13670000, 50200000, 0, 0, 0, 0},	//Professor Putricide
+	{12000000, 35999000, 12000000, 35999000, 0, 0, 0, 0},	//Valithria Dreamwalker
+	{14200000, 59400000, 18900000, 71300000, 0, 0, 0, 0},	//Blood-Queen Lana'thel
+	{5620000, 22500000, 7624000, 30497000, 0, 0, 0, 0},		//Prince Valanar (TODO trash stats)
+	{11156000, 38348000, 13950000, 45950000, 0, 0, 0, 0},	//Sindragosa
+	{17431250, 61009376, 29458812, 103151168, 0, 0, 0, 0}	//The Lich King
+};
+
+enum IcecrownCitadel_GameObjects{
+	GO_SCIENTIST_DOOR_COLLISION	= 201612,
+	GO_SCIENTIST_AIRLOCK_DOOR_GREEN	= 201614,
+	GO_OOZE_RELEASE_VALVE		= 201615,
+	GO_GAS_RELEASE_VALVE		= 201616,
+	GO_SCOURGE_TELEPORTER1		= 202242,
+	GO_SCOURGE_TELEPORTER2		= 202243,
+	GO_SCOURGE_TELEPORTER3		= 202244,
+	GO_SCOURGE_TELEPORTER4		= 202245,
+	GO_SCOURGE_TELEPORTER5		= 202235,
+	GO_MARROWGAR_ENTRANCE		= 201857,
+	GO_ICEBLOCK_1				= 201910,
+	GO_ICEBLOCK_2				= 201911,
+	GO_DAMMED_ENTRANCE			= 201563,
+	GO_LADY_DEATHWISPER_ELEVATOR	= 202220,
+	GO_SAURFANGS_DOOR			= 201825,
+	GO_GREEN_PLAGUE_ENTRANCE	= 201370,
+	GO_ORANGE_PLAGUE_ENTRANCE	= 201371,
+	GO_SCIENTIST_AIRLOCK_DOOR_ORANGE = 201613,
+	GO_SCIENTIST_ENTRANCE		= 201372,
+	GO_CRIMSON_HALL_DOOR		= 201376,
+	GO_BLOOD_ELF_COUNCIL_DOOR_L	= 201378,
+	GO_BLOOD_ELF_COUNCIL_DOOR_R	= 201377,
+	GO_GREEN_DRAGON_ENTRANCE	= 201375,
+	GO_CACHE_OF_THE_DREAMWALKER	= 202339,
+	GO_GREEN_DRAGON_BOSS_EXIT	= 201374,
+	GO_SINDRAGOSA_ENTRANCE_DOOR	= 201373,
+	GO_SINDRAGOSA_SHORTCUT_EXIT_DOOR = 201379,	
+	
+	GO_BLOODWING_DOOR	= 201920,
+	GO_FROSTWING_DOOR	= 201919
+};
