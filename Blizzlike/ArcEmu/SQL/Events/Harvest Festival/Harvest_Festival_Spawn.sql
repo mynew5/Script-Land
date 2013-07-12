@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=10;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (10,"Harvest Festival");
+
 DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '512011' AND '512167';
 INSERT INTO `gameobject_spawns` (`id`, `Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`, `phase`, `overrides`) VALUES
 	('512011','180728','0','-5117.4','-791.48','483.585','-0.191986','0','0','0.095846','-0.995396','1','0','0','1','0','1','0'),

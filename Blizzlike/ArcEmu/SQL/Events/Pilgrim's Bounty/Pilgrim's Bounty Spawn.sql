@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=13;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (13,"Midsummer Fire Festival");
+
 DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '590001' AND '590592';
 INSERT INTO `gameobject_spawns` (`id`, `Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`, `phase`, `overrides`) VALUES
 	('590001','195191','0','-5074.44','-782.17','495.119','4.20169','0','0','0.862782','-0.505575','1','0','0','1','0','1','0'),

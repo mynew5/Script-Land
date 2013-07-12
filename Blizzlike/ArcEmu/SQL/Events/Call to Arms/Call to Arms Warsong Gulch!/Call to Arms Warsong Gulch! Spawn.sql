@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=41;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (41,"Call to Arms: Warsong Gulch!");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 434662 AND 434788;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434662',14981,0,'-8395.15','265.007','120.886','2.312',0,15098,1514,'2','0','0','1',0,'0','0','0','0',0,0,'0','5598','0','0',0,'1'),

@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=44;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (44,"Call to Arms: Strand of the Ancients!");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 435044 AND 435162;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('435044',30566,0,'-8411.89','575.031','92.3179','0.855211',0,27155,1973,'2','0','0','257',0,'0','0','0','0',0,0,'0','0','0','0',0,'1'),

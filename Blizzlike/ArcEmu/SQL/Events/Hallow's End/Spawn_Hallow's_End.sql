@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=5;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (5,"Hallow\'s End");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN '400000' AND '400058';
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('400000',18927,0,'-8854.78','649.83','96.7417','1.43117',0,22371,12,'0','16777472','0','4097',0,'0','0','0','0',0,0,'0','0','0','0',0,'1'),

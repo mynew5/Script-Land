@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=19;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (19,"Fishing Extravaganza Announce");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 434404 AND 434405;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434404',15116,1,'1612.98','-4427.43','11.4343','2.76668','0','15237',1074,'0','16777472','0','1','0','0','0','0','0','0','0','0','12850','0','0','0','1'),

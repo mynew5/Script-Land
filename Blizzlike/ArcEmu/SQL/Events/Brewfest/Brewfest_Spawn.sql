@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=11;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (11,"Brewfest");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN '420000' AND '420393';
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('420000',19178,0,'1573.04','265.955','-43.1027','0.593412',0,6232,714,'0','0','0','4097',0,'0','0','0','0',0,0,'0','0','0','0',0,'1'),

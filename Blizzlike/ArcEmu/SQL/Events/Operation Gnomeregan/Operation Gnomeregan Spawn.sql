@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=15;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (15,"Operation Gnomeregan");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 434000 AND 434074;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434000',39623,0,'-4916.45','-1217.71','501.735','5.07891',0,3441,64,'0','0','0','1',0,'0','0','0','0',0,0,'0','0','0','0',0,'1'),

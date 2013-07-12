@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=43;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (43,"Call to Arms: Eye of the Storm!");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 434918 AND 435043;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434918',20384,530,'-1955.12','5258.84','-38.8511','5.24275',0,19572,1801,'2','0','0','257',0,'0','0','0','0',0,0,'0','26003','0','0',0,'1'),

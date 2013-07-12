@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=14;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (14,"Night Elf Mohawk");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN '434300' AND '434315';
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434300',36778,1,'10048.8','568.868','1320.16','1.1952','0','6080',35,'0','16777472','3','4097','12','0','0','0','0','0','0','0','0','0','0','0','1'),

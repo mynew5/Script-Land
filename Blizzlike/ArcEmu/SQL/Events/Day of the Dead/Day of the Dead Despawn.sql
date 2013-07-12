@@ -4,3 +4,11 @@ DELETE FROM `npc_gossip_textid` WHERE `creatureid` IN (18927,19148,19169,19171,1
 UPDATE `creature_proto` SET `auras`=' ' WHERE `entry` IN (18927,19148,19169,19171,19172,19173,19175,19176,19177,19178,20102);
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN '421376' AND '421522';
 DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '512168' AND '512570';
+
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=12;

@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=16;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (16,"AQ War Effort ");
+
 DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '512639' AND '512657';
 INSERT INTO `gameobject_spawns` (`id`, `Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`, `phase`, `overrides`) VALUES
 	('512639','10192','1','-6781.92','816.756','55.7469','5.54285','0','0','0.361772','-0.932267','1','0','0','1','0','1','0'),

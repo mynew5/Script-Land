@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=3;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (3,"Children\'s Week");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN 434075 AND 434080;
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('434075',5698,0,'1653.48','366.022','-60.7632','1.11856','0','4052',68,'0','0','0',16,'0','0','0','0','0','0','0','0','0','0','0','0','1'),

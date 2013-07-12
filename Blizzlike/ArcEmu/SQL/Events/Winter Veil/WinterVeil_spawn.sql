@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=7;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (7,"Winter Veil");
+
 DELETE FROM `gameobject_spawns` WHERE `id` BETWEEN '110000' AND '111780';
 INSERT INTO `gameobject_spawns`(`id`, `Entry`, `map`, `position_x`, `position_y`, `position_z`, `Facing`, `orientation1`, `orientation2`, `orientation3`, `orientation4`, `State`, `Flags`, `Faction`, `Scale`, `stateNpcLink`, `phase`, `overrides`) VALUES
 	('110000','178645','0','-9465.45','-8.79167','62.0397','-1.71042','0','0','0.75471','-0.656059','1','0','0','1','0','1','0'),

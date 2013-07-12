@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `active_event_id` (
+  `active_event` int(10) unsigned NOT NULL,
+  `name` text COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`active_event`)
+);
+
+DELETE FROM `active_event_id` WHERE `active_event`=12;
+INSERT INTO `active_event_id` (`active_event`, `name`) VALUES (12,"Day of the Dead");
+
 DELETE FROM `creature_spawns` WHERE `id` BETWEEN '421376' AND '421522';
 INSERT INTO `creature_spawns` (`id`, `entry`, `map`, `position_x`, `position_y`, `position_z`, `orientation`, `movetype`, `displayid`, `faction`, `flags`, `bytes0`, `bytes1`, `bytes2`, `emote_state`, `npc_respawn_link`, `channel_spell`, `channel_target_sqlid`, `channel_target_sqlid_creature`, `standstate`, `death_state`, `mountdisplayid`, `slot1item`, `slot2item`, `slot3item`, `CanFly`, `phase`) VALUES
 	('421376',34476,0,'1830.34','219.535','60.6017','4.58298',0,29228,1801,'0','0','0','0',0,'0','0','0','0',0,0,'0','0','0','0',0,'1'),
